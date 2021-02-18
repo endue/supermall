@@ -6,6 +6,7 @@
       <feature-view/>
       <!--由于传递过去的是非字符串，这里需要绑定-->
       <tab-control class="tab-control" :titles="['流行','新款','精选']"/>
+
       <h2>1</h2>
       <h2>1</h2>
       <h2>1</h2>
@@ -38,7 +39,7 @@
   import RecommendView from './childComps/RecommendView'
   import FeatureView from './childComps/FeatureView'
 
-  import {getHomeMultidata} from 'network/home'
+  import {getHomeMultidata, getHomeGoods} from 'network/home'
 
   export default {
     name: "Home",
@@ -52,15 +53,45 @@
     data(){
       return {
         banners: [],
-        recommends: []
+        recommends: [],
+        goods: {
+          'pop': {
+            page: 0,
+            list: []
+          },
+          'new': {
+            page: 0,
+            list: []
+          },
+          'sell': {
+            page: 0,
+            list: []
+          }
+        }
       }
     },
     created() {
-      // 请求数据
-      getHomeMultidata().then(res => {
-        this.banners = res.data.banner.list
-        this.recommends = res.data.recommend.list
-      })
+      // 1.请求轮播图相关数据,这里必须指定this
+     this.getHomeMultidata()
+      // 2.请求商品数据
+      this.getHomeGoods('pop')
+      this.getHomeGoods('new')
+      this.getHomeGoods('sell')
+    },
+    methods: {
+      getHomeMultidata() {
+        getHomeMultidata().then(res => {
+          this.banners = res.data.banner.list
+          this.recommends = res.data.recommend.list
+        })
+      },
+      getHomeGoods(type) {
+        const page = this.goods[type].page + 1
+        getHomeGoods(type, page).then(res => {
+          this.goods[type].list.push(...res.data.list)
+          this.goods[type].page = page
+        })
+      }
     }
   }
 </script>
