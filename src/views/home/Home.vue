@@ -1,7 +1,11 @@
 <template>
     <div id="home">
       <nav-bar class="home-nav"><div slot="center">购物车</div></nav-bar>
-      <scroll class="content">
+      <!--
+      子组件属性名称为驼峰，这里要写蛇形：如：probeType
+      同时对于非字符串类型，要使用v-bind
+      -->
+      <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll">
         <home-swiper :banners="banners"/>
         <recommend-view :recommends="recommends"/>
         <feature-view/>
@@ -11,15 +15,63 @@
                      @tabClick="tabClick"/>
 
         <goods-list :goods="showGoods"/>
+
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
+        <div>商品图片</div>
       </scroll>
+      <!--监听组件点击必须加上.native-->
+      <back-top @click.native="backClick" v-show="isShowBackTop"/>
     </div>
 </template>
 
 <script>
   import NavBar from 'components/common/navbar/NavBar'
-  import Scroll from './components/common/scroll/Scroll'
+  import Scroll from 'components/common/scroll/Scroll'
   import TabControl from 'components/content/tabControl/TabControl'
   import GoodsList from 'components/content/goods/GoodsList'
+  import BackTop from 'components/content/backTop/BackTop'
 
   import HomeSwiper from './childComps/HomeSwiper'
   import RecommendView from './childComps/RecommendView'
@@ -32,6 +84,7 @@
     components: {
       NavBar,
       Scroll,
+      BackTop,
       TabControl,
       GoodsList,
       FeatureView,
@@ -56,7 +109,8 @@
             list: []
           }
         },
-        currentType: 'pop'
+        currentType: 'pop',
+        isShowBackTop: false
       }
     },
     computed: {
@@ -104,6 +158,14 @@
             this.currentType = 'sell'
                 break
         }
+      },
+      // 回到顶部
+      backClick() {
+        this.$refs.scroll.scrollTo(0, 0, 300)
+      },
+      // 回到顶部按钮是否显示
+      contentScroll(position) {
+        this.isShowBackTop = -position.y > 200
       }
     }
   }
@@ -111,7 +173,7 @@
 
 <style scoped>
   #home {
-    padding-top: 44px;
+    /*padding-top: 44px;*/
     height: 100vh;
     position: relative;
   }
@@ -130,12 +192,13 @@
   .tab-control {
     position: sticky;
     top: 44px;
+    z-index: 9;
   }
   .content {
     overflow: hidden;
+    position: absolute;
     top: 44px;
     bottom: 49px;
-    position: absolute;
     left: 0;
     right: 0;
   }
