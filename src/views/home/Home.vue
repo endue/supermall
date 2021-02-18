@@ -1,28 +1,23 @@
 <template>
     <div id="home">
       <nav-bar class="home-nav"><div slot="center">购物车</div></nav-bar>
-      <home-swiper :banners="banners"/>
-      <recommend-view :recommends="recommends"/>
-      <feature-view/>
-      <!--由于传递过去的是非字符串，这里需要绑定-->
-      <tab-control class="tab-control"
-                   :titles="['流行','新款','精选']"
-                    @tabClick="tabClick"/>
+      <scroll class="content">
+        <home-swiper :banners="banners"/>
+        <recommend-view :recommends="recommends"/>
+        <feature-view/>
+        <!--由于传递过去的是非字符串，这里需要绑定-->
+        <tab-control class="tab-control"
+                     :titles="['流行','新款','精选']"
+                     @tabClick="tabClick"/>
 
-      <goods-list :goods="showGoods"/>
-
-      <h2>1</h2>
-      <h2>1</h2>
-      <h2>1</h2>
-      <h2>1</h2>
-      <h2>1</h2>
-      <h2>1</h2>
-
+        <goods-list :goods="showGoods"/>
+      </scroll>
     </div>
 </template>
 
 <script>
   import NavBar from 'components/common/navbar/NavBar'
+  import Scroll from './components/common/scroll/Scroll'
   import TabControl from 'components/content/tabControl/TabControl'
   import GoodsList from 'components/content/goods/GoodsList'
 
@@ -36,6 +31,7 @@
     name: "Home",
     components: {
       NavBar,
+      Scroll,
       TabControl,
       GoodsList,
       FeatureView,
@@ -116,6 +112,8 @@
 <style scoped>
   #home {
     padding-top: 44px;
+    height: 100vh;
+    position: relative;
   }
 
   .home-nav {
@@ -132,5 +130,13 @@
   .tab-control {
     position: sticky;
     top: 44px;
+  }
+  .content {
+    overflow: hidden;
+    top: 44px;
+    bottom: 49px;
+    position: absolute;
+    left: 0;
+    right: 0;
   }
 </style>
