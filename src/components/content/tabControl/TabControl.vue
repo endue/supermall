@@ -28,6 +28,7 @@
     methods: {
       btnClick(index){
         this.currentIndex = index
+        this.$emit('tabClick', index)
       }
     }
   }
