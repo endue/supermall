@@ -5,7 +5,12 @@
       子组件属性名称为驼峰，这里要写蛇形：如：probeType
       同时对于非字符串类型，要使用v-bind
       -->
-      <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll">
+      <scroll class="content"
+              ref="scroll"
+              :probe-type="3"
+              @scroll="contentScroll"
+              :pull-up-load="true"
+              @pullingUp="loadMore">
         <home-swiper :banners="banners"/>
         <recommend-view :recommends="recommends"/>
         <feature-view/>
@@ -16,50 +21,6 @@
 
         <goods-list :goods="showGoods"/>
 
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
-        <div>商品图片</div>
       </scroll>
       <!--监听组件点击必须加上.native-->
       <back-top @click.native="backClick" v-show="isShowBackTop"/>
@@ -141,6 +102,8 @@
         getHomeGoods(type, page).then(res => {
           this.goods[type].list.push(...res.data.list)
           this.goods[type].page = page
+
+          this.$refs.scroll.finishPullUp()
         })
       },
       /**
@@ -166,6 +129,10 @@
       // 回到顶部按钮是否显示
       contentScroll(position) {
         this.isShowBackTop = -position.y > 200
+      },
+      // 上拉加载
+      loadMore() {
+        this.getHomeGoods(this.currentType)
       }
     }
   }
