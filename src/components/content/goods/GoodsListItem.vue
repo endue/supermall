@@ -1,5 +1,5 @@
 <template>
-    <div class="goods-item">
+    <div class="goods-item" @click="itemClick">
       <!--监听图片加载完毕后的回调@load-->
       <img :src="goodsItem.show.img" @load="imageLoad">
       <div class="goods-info">
@@ -25,6 +25,10 @@
       // 当图片被加载完成后，发送消息总线事件
       imageLoad() {
         this.$bus.$emit('itemImageLoad')
+      },
+      // 监听商品点击,跳转详情页并附带商品id
+      itemClick() {
+        this.$router.push('/detail' + this.goodsItem.iid)
       }
     }
   }
