@@ -9,7 +9,8 @@
               ref="scroll"
               :probe-type="3"
               @scroll="contentScroll"
-              :pull-up-load="true">
+              :pull-up-load="true"
+              @pullingUp="loadMore">
         <home-swiper :banners="banners"/>
         <recommend-view :recommends="recommends"/>
         <feature-view/>
@@ -131,7 +132,11 @@
       // 回到顶部按钮是否显示
       contentScroll(position) {
         this.isShowBackTop = -position.y > 200
-      }
+      },
+      // 上拉加载更多
+      loadMore() {
+        this.getHomeGoods(this.currentType)
+      },
     }
   }
 </script>
