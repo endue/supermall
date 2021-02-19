@@ -9,8 +9,7 @@
               ref="scroll"
               :probe-type="3"
               @scroll="contentScroll"
-              :pull-up-load="true"
-              @pullingUp="loadMore">
+              :pull-up-load="true">
         <home-swiper :banners="banners"/>
         <recommend-view :recommends="recommends"/>
         <feature-view/>
@@ -86,6 +85,11 @@
       this.getHomeGoods('pop')
       this.getHomeGoods('new')
       this.getHomeGoods('sell')
+
+      // 监听消息总线上的itemImageLoad事件
+      this.$bus.$on('itemImageLoad', () => {
+        this.$refs.scroll.refresh()
+      })
     },
     methods: {
       /**
@@ -102,8 +106,6 @@
         getHomeGoods(type, page).then(res => {
           this.goods[type].list.push(...res.data.list)
           this.goods[type].page = page
-
-          this.$refs.scroll.finishPullUp()
         })
       },
       /**
@@ -129,10 +131,6 @@
       // 回到顶部按钮是否显示
       contentScroll(position) {
         this.isShowBackTop = -position.y > 200
-      },
-      // 上拉加载
-      loadMore() {
-        this.getHomeGoods(this.currentType)
       }
     }
   }

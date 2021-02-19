@@ -1,6 +1,7 @@
 <template>
     <div class="goods-item">
-      <img :src="goodsItem.show.img">
+      <!--监听图片加载完毕后的回调@load-->
+      <img :src="goodsItem.show.img" @load="imageLoad">
       <div class="goods-info">
         <p>{{goodsItem.title}}</p>
         <span class="price">{{goodsItem.price}}</span>
@@ -18,6 +19,12 @@
         default() {
           return {}
         }
+      }
+    },
+    methods: {
+      // 当图片被加载完成后，发送消息总线事件
+      imageLoad() {
+        this.$bus.$emit('itemImageLoad')
       }
     }
   }
