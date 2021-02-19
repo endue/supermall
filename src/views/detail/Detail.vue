@@ -1,23 +1,35 @@
 <template>
   <div id="detail">
     <detail-nav-bar/>
+    <detail-swiper :top-images="topImages"/>
   </div>
 </template>
 
 <script>
   import DetailNavBar from './childComps/DetailNavBar'
+  import DetailSwiper from './childComps/DetailSwiper'
+
+  import {getDetail} from 'network/detail'
+
   export default {
     name: "Detail",
     components: {
+      DetailSwiper,
       DetailNavBar
     },
     data() {
       return {
-        iid: null
+        iid: null,
+        topImages: []
       }
     },
     created() {
       this.iid = this.$route.params.iid
+      // 请求详情数据
+      getDetail(this.iid).then(res => {
+        // 获取顶部轮播图
+        this.topImages = res.result.itemInfo.topImages
+      })
     }
   }
 </script>
