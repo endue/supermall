@@ -39,6 +39,7 @@
   import FeatureView from './childComps/FeatureView'
 
   import {getHomeMultidata, getHomeGoods} from 'network/home'
+  import {debounce} from 'common/util'
 
   export default {
     name: "Home",
@@ -90,7 +91,7 @@
     mounted() {
       // 监听消息总线上的itemImageLoad事件
       // 这里放到mounted中而不是created，防止$refs取不到值
-      const refresh = this.debounce(this.$refs.scroll.refresh(), 50)
+      const refresh = debounce(this.$refs.scroll.refresh(), 50)
       this.$bus.$on('itemImageLoad', () => {
         refresh
       })
@@ -110,6 +111,8 @@
         getHomeGoods(type, page).then(res => {
           this.goods[type].list.push(...res.data.list)
           this.goods[type].page = page
+          // 重置上拉加载更多
+          this.$refs.scroll.finishPullUp()
         })
       },
       /**
@@ -140,16 +143,6 @@
       loadMore() {
         this.getHomeGoods(this.currentType)
       },
-      // 防抖动函数，避免频繁的请求
-      debounce(func, delay) {
-        let timer = null
-        return function (...args) {
-          if(timer) clearTimeout(timer)
-          timer = setTimeout(() => {
-            func.apply(this, args)
-          }, delay)
-        }
-      }
     }
   }
 </script>
