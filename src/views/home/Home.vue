@@ -70,7 +70,8 @@
         currentType: 'pop',
         isShowBackTop: false,
         tabOffsetTop: 0,
-        isTopFixed: false
+        isTopFixed: false,
+        saveY: 0
       }
     },
     computed: {
@@ -93,6 +94,14 @@
       this.$bus.$on('itemImageLoad', () => {
         refresh
       })
+    },
+    // 让home保持原状态，基于keep-alive和activated以及deactivated来实现
+    activated() {
+      this.$refs.scroll.scrollTo(0,this.saveY,0)
+      this.$refs.scroll.refresh()
+    },
+    deactivated() {
+      this.saveY = this.$refs.scroll.getScrollY()
     },
     methods: {
       /**
