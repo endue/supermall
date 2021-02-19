@@ -1,6 +1,11 @@
 <template>
     <div id="home">
       <nav-bar class="home-nav"><div slot="center">购物车</div></nav-bar>
+      <tab-control class="tab-control"
+                   :titles="['流行','新款','精选']"
+                   @tabClick="tabClick"
+                   ref="tabControl1"
+                   v-show="isTopFixed"/>
       <!--
       子组件属性名称为驼峰，这里要写蛇形：如：probeType
       同时对于非字符串类型，要使用v-bind
@@ -11,13 +16,13 @@
               @scroll="contentScroll"
               :pull-up-load="true"
               @pullingUp="loadMore">
-        <home-swiper :banners="banners"/>
+        <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad"/>
         <recommend-view :recommends="recommends"/>
         <feature-view/>
         <!--由于传递过去的是非字符串，这里需要绑定-->
-        <tab-control class="tab-control"
-                     :titles="['流行','新款','精选']"
-                     @tabClick="tabClick"/>
+        <tab-control :titles="['流行','新款','精选']"
+                     @tabClick="tabClick"
+                     ref="tabControl2"/>
 
         <goods-list :goods="showGoods"/>
 
@@ -39,7 +44,7 @@
   import FeatureView from './childComps/FeatureView'
 
   import {getHomeMultidata, getHomeGoods} from 'network/home'
-  import {debounce} from 'common/util'
+  import {debounce} from 'common/utils'
 
   export default {
     name: "Home",
@@ -58,21 +63,14 @@
         banners: [],
         recommends: [],
         goods: {
-          'pop': {
-            page: 0,
-            list: []
-          },
-          'new': {
-            page: 0,
-            list: []
-          },
-          'sell': {
-            page: 0,
-            list: []
-          }
+          'pop': {page: 0, list: []},
+          'new': {page: 0, list: []},
+          'sell': {page: 0, list: []}
         },
         currentType: 'pop',
-        isShowBackTop: false
+        isShowBackTop: false,
+        tabOffsetTop: 0,
+        isTopFixed: false
       }
     },
     computed: {
@@ -130,19 +128,30 @@
             this.currentType = 'sell'
                 break
         }
+        this.$refs.tabControl1.currentIndex = index
+        this.$refs.tabControl2.currentIndex = index
       },
       // 回到顶部
       backClick() {
         this.$refs.scroll.scrollTo(0, 0, 300)
       },
-      // 回到顶部按钮是否显示
+      // 滚动监听
       contentScroll(position) {
-        this.isShowBackTop = -position.y > 200
+        // 回到顶部按钮是否显示
+        this.isShowBackTop = (-position.y) > 200
+        // tabControl是否吸顶
+        this.isTopFixed = (-position.y) > this.tabOffsetTop
       },
       // 上拉加载更多
       loadMore() {
         this.getHomeGoods(this.currentType)
       },
+      // 轮播图加载完图片
+      swiperImageLoad() {
+        // 获取tab-control组件距离顶部插件
+        // 通过$el获取组件中的元素，在获取元素的属性
+        this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop
+      }
     }
   }
 </script>
@@ -158,11 +167,11 @@
     background-color: var(--color-tint);
     color: #F0F0F0;
 
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    z-index: 9;
+    /*position: fixed;*/
+    /*left: 0;*/
+    /*right: 0;*/
+    /*top: 0;*/
+    /*z-index: 9;*/
   }
 
   .tab-control {
@@ -177,5 +186,10 @@
     bottom: 49px;
     left: 0;
     right: 0;
+  }
+
+  .tab-control {
+    position: relative;
+    z-index: 9;
   }
 </style>
