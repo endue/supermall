@@ -86,10 +86,13 @@
       this.getHomeGoods('pop')
       this.getHomeGoods('new')
       this.getHomeGoods('sell')
-
+    },
+    mounted() {
       // 监听消息总线上的itemImageLoad事件
+      // 这里放到mounted中而不是created，防止$refs取不到值
+      const refresh = this.debounce(this.$refs.scroll.refresh(), 50)
       this.$bus.$on('itemImageLoad', () => {
-        this.$refs.scroll.refresh()
+        refresh
       })
     },
     methods: {
@@ -137,6 +140,16 @@
       loadMore() {
         this.getHomeGoods(this.currentType)
       },
+      // 防抖动函数，避免频繁的请求
+      debounce(func, delay) {
+        let timer = null
+        return function (...args) {
+          if(timer) clearTimeout(timer)
+          timer = setTimeout(() => {
+            func.apply(this, args)
+          }, delay)
+        }
+      }
     }
   }
 </script>
