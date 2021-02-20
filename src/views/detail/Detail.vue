@@ -10,7 +10,7 @@
       <detail-comment-info :comment-info="commentInfo" ref="comment"/>
       <goods-list :goods="recommends" ref="recommend"/>
     </scroll>
-    <detail-bottom-bar/>
+    <detail-bottom-bar @addToCart="addToCart"/>
     <back-top @click.native="backClick" v-show="isShowBackTop"/>
   </div>
 </template>
@@ -134,6 +134,15 @@
             this.$refs.navBar.currentIndex = this.currentIndex
           }
         }
+      },
+      // 加入购物车
+      addToCart() {
+        const product = {}
+        product.image = this.topImages[0]
+        product.titile = this.goods.title
+        product.desc = this.goods.desc
+        product.price = this.goods.realPrice
+        product.iid = this.iid
       }
     },
     mounted() {
