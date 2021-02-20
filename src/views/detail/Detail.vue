@@ -97,6 +97,7 @@
         this.themeTopYs.push(this.$refs.params.$el.offsetTop)
         this.themeTopYs.push(this.$refs.comment.$el.offsetTop)
         this.themeTopYs.push(this.$refs.recommend.$el.offsetTop)
+        this.themeTopYs.push(Number.MAX_VALUE)
       },50)
     },
     mixins: [itemListenerMixin],
@@ -118,11 +119,11 @@
       },
       // 监听scroll滚动实现nav-bar的联动
       contentScroll(position) {
+        // 获取当前滚动到的位置
         const positionY = position.y
         let length = this.themeTopYs.length
-        for(let i = 0; i < length; i++){
-          if(this.currentIndex !== i &&
-            (i <length - 1 && positionY >= this.themeTopYs[i] && positionY < this.themeTopYs[i + 1]) ||(i === length - 1 && positionY >= this.themeTopYs[i])){
+        for(let i = 0; i < length - 1; i++){
+          if(this.currentIndex !== i && (positionY >= this.themeTopYs[i] && positionY < this.themeTopYs[i + 1] )){
             this.currentIndex = i
             this.$refs.navBar.currentIndex = this.currentIndex
           }
