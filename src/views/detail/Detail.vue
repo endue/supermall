@@ -1,14 +1,14 @@
 <template>
   <div id="detail">
-    <detail-nav-bar class="detail-nav"/>
+    <detail-nav-bar class="detail-nav" @titleClick="titleClick"/>
     <scroll class="content" ref="scroll">
       <detail-swiper :top-images="topImages"/>
       <detail-base-info :goods="goods"/>
       <detail-shop-info :shop="shop"/>
       <detail-image-info :detail-info="detailInfo" @imageLoad="imageLoad"/>
-      <detail-param-info :param-info="paramInfo"/>
-      <detail-comment-info :comment-info="commentInfo"/>
-      <goods-list :goods="recommends"/>
+      <detail-param-info :param-info="paramInfo" ref="params"/>
+      <detail-comment-info :comment-info="commentInfo" ref="comment"/>
+      <goods-list :goods="recommends" ref="recommend"/>
     </scroll>
   </div>
 </template>
@@ -50,6 +50,8 @@
         paramInfo: {},
         commentInfo: {},
         recommends: [],
+        themeTopYs: [],
+        getThemeTopY: null
         // itemImgListener: null
       }
     },
@@ -72,16 +74,46 @@
         if(data.rate.cRate !== 0){
           this.commentInfo = data .rate.list[0]
         }
+        // // 渲染完上述数据后的回调，有图片存在会有问题
+        // this.$nextTick(() => {
+        //   this.themeTopYs = []
+        //   this.themeTopYs.push(0)
+        //   this.themeTopYs.push(this.$refs.params.$el.offsetTop)
+        //   this.themeTopYs.push(this.$refs.comment.$el.offsetTop)
+        //   this.themeTopYs.push(this.$refs.recommend.$el.offsetTop)
+        // })
+
       })
       // 请求推荐数据
       getRecommend().then(res => {
         this.recommends = res.data.list
       })
+
+      // 防抖来给themeTopYs数组赋值
+      this.getThemeTopY = debounce(() => {
+        this.themeTopYs = []
+        this.themeTopYs.push(0)
+        this.themeTopYs.push(this.$refs.params.$el.offsetTop)
+        this.themeTopYs.push(this.$refs.comment.$el.offsetTop)
+        this.themeTopYs.push(this.$refs.recommend.$el.offsetTop)
+      },50)
     },
     mixins: [itemListenerMixin],
     methods: {
       imageLoad() {
         this.$refs.scroll.refresh()
+        // 这种方式调用太频繁，采用后面的防抖技术
+        // this.themeTopYs = []
+        // this.themeTopYs.push(0)
+        // this.themeTopYs.push(this.$refs.params.$el.offsetTop)
+        // this.themeTopYs.push(this.$refs.comment.$el.offsetTop)
+        // this.themeTopYs.push(this.$refs.recommend.$el.offsetTop)
+        // 防抖技术
+        this.getThemeTopY()
+      },
+      // nav-bar发生点击跳转到对应位置
+      titleClick(index) {
+        this.$refs.scroll.scrollTo(0, -this.themeTopYs[index], 300)
       }
     },
     mounted() {

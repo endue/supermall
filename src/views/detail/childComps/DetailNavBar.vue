@@ -30,6 +30,8 @@
     methods: {
       titleClick(index) {
         this.currentIndex = index
+        // 点击事件发送给父组件
+        this.$emit('titleClick', index)
       },
       backClick() {
         this.$router.go(-1)
