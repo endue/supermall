@@ -38,22 +38,18 @@
   import Scroll from 'components/common/scroll/Scroll'
   import TabControl from 'components/content/tabControl/TabControl'
   import GoodsList from 'components/content/goods/GoodsList'
-  import BackTop from 'components/content/backTop/BackTop'
-
   import HomeSwiper from './childComps/HomeSwiper'
   import RecommendView from './childComps/RecommendView'
   import FeatureView from './childComps/FeatureView'
-
   import {getHomeMultidata, getHomeGoods} from 'network/home'
   import {debounce} from 'common/utils'
-  import {itemListenerMixin} from "common/mixin";
+  import {itemListenerMixin,backTopMixin} from "common/mixin";
 
   export default {
     name: "Home",
     components: {
       NavBar,
       Scroll,
-      BackTop,
       TabControl,
       GoodsList,
       FeatureView,
@@ -70,7 +66,6 @@
           'sell': {page: 0, list: []}
         },
         currentType: 'pop',
-        isShowBackTop: false,
         tabOffsetTop: 0,
         isTopFixed: false,
         saveY: 0,
@@ -90,7 +85,6 @@
       this.getHomeGoods('new')
       this.getHomeGoods('sell')
     },
-    mixins: [itemListenerMixin],
     mounted() {
       // 基于混入mixins来实现
       // // 监听消息总线上的itemImageLoad事件
@@ -113,6 +107,7 @@
       // 取消全局事件监听,如果不设置第二个参数，那么取消的是全局的，也就导致Detail组件中的监听也没了
       this.$bus.$off('itemImageLoad',this.itemImgListener)
     },
+    mixins: [itemListenerMixin,backTopMixin],
     methods: {
       /**
        * 网络请求
@@ -150,14 +145,10 @@
         this.$refs.tabControl1.currentIndex = index
         this.$refs.tabControl2.currentIndex = index
       },
-      // 回到顶部
-      backClick() {
-        this.$refs.scroll.scrollTo(0, 0, 300)
-      },
       // 滚动监听
       contentScroll(position) {
         // 回到顶部按钮是否显示
-        this.isShowBackTop = (-position.y) > 200
+        this.listenShowBackTop(position)
         // tabControl是否吸顶
         this.isTopFixed = (-position.y) > this.tabOffsetTop
       },

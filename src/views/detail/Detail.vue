@@ -26,10 +26,9 @@
   import DetailBottomBar from './childComps/DetailBottomBar'
   import Scroll from 'components/common/scroll/Scroll'
   import GoodsList from 'components/content/goods/GoodsList'
-  import BackTop from 'components/content/backTop/BackTop'
   import {getDetail, Goods, Shop, GoodsParam, getRecommend} from 'network/detail'
   import {debounce} from 'common/utils'
-  import {itemListenerMixin} from "common/mixin";
+  import {itemListenerMixin,backTopMixin} from "common/mixin";
 
   export default {
     name: "Detail",
@@ -43,7 +42,6 @@
       DetailCommentInfo,
       DetailBottomBar,
       GoodsList,
-      BackTop,
       Scroll
     },
     data() {
@@ -59,7 +57,6 @@
         themeTopYs: [],
         getThemeTopY: null,
         currentIndex: 0,
-        isShowBackTop: false
         // itemImgListener: null
       }
     },
@@ -107,7 +104,7 @@
         this.themeTopYs.push(Number.MAX_VALUE)
       },50)
     },
-    mixins: [itemListenerMixin],
+    mixins: [itemListenerMixin,backTopMixin],
     methods: {
       imageLoad() {
         this.$refs.scroll.refresh()
@@ -126,6 +123,8 @@
       },
       // 监听scroll滚动实现nav-bar的联动
       contentScroll(position) {
+        // 是否显示回到顶部
+        this.listenShowBackTop(position)
         // 获取当前滚动到的位置
         const positionY = position.y
         let length = this.themeTopYs.length
@@ -135,12 +134,6 @@
             this.$refs.navBar.currentIndex = this.currentIndex
           }
         }
-        // 是否显示回到顶部
-        this.isShowBackTop = (-position.y) > 200
-      },
-      // 回到顶部
-      backClick() {
-        this.$refs.scroll.scrollTo(0, 0, 300)
       }
     },
     mounted() {
