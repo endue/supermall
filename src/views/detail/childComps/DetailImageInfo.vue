@@ -15,10 +15,13 @@
 
 <script>
   export default {
-    name: "DetailGoodsInfo",
+    name: "DetailImageInfo",
     props: {
       detailInfo: {
-        type: Object
+        type: Object,
+        default() {
+          return {}
+        }
       }
     },
     data() {
