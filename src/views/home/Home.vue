@@ -46,6 +46,7 @@
 
   import {getHomeMultidata, getHomeGoods} from 'network/home'
   import {debounce} from 'common/utils'
+  import {itemListenerMixin} from "common/mixin";
 
   export default {
     name: "Home",
@@ -73,7 +74,7 @@
         tabOffsetTop: 0,
         isTopFixed: false,
         saveY: 0,
-        itemImgListener: null
+        // itemImgListener: null
       }
     },
     computed: {
@@ -89,15 +90,17 @@
       this.getHomeGoods('new')
       this.getHomeGoods('sell')
     },
+    mixins: [itemListenerMixin],
     mounted() {
-      // 监听消息总线上的itemImageLoad事件
-      // 这里放到mounted中而不是created，防止$refs取不到值
-      const refresh = debounce(this.$refs.scroll.refresh(), 50)
-
-      // 自定义全局事件监听，收到事件执行某些操作
-      // Detail组件也使用了
-      this.itemImgListener = () => {refresh()}
-      this.$bus.$on('itemImageLoad', this.itemImgListener)
+      // 基于混入mixins来实现
+      // // 监听消息总线上的itemImageLoad事件
+      // // 这里放到mounted中而不是created，防止$refs取不到值
+      // const refresh = debounce(this.$refs.scroll.refresh(), 50)
+      //
+      // // 自定义全局事件监听，收到事件执行某些操作
+      // // Detail组件也使用了
+      // this.itemImgListener = () => {refresh()}
+      // this.$bus.$on('itemImageLoad', this.itemImgListener)
     },
     // 让home保持原状态，基于keep-alive和activated以及deactivated来保存scroll滑动位置的记录
     // 这样当跳转其他页面回来后依旧显示在之前的位置

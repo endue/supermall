@@ -25,6 +25,7 @@
   import GoodsList from 'components/content/goods/GoodsList'
   import {getDetail, Goods, Shop, GoodsParam, getRecommend} from 'network/detail'
   import {debounce} from 'common/utils'
+  import {itemListenerMixin} from "common/mixin";
 
   export default {
     name: "Detail",
@@ -49,7 +50,7 @@
         paramInfo: {},
         commentInfo: {},
         recommends: [],
-        itemImgListener: null
+        // itemImgListener: null
       }
     },
     created() {
@@ -77,15 +78,17 @@
         this.recommends = res.data.list
       })
     },
+    mixins: [itemListenerMixin],
     methods: {
       imageLoad() {
         this.$refs.scroll.refresh()
       }
     },
     mounted() {
-      const refresh = debounce(this.$refs.scroll.refresh(), 50)
-      this.itemImgListener = () => {refresh()}
-      this.$bus.$on('itemImageLoad', this.itemImgListener)
+      // 基于混入mixins来实现
+      // const refresh = debounce(this.$refs.scroll.refresh(), 50)
+      // this.itemImgListener = () => {refresh()}
+      // this.$bus.$on('itemImageLoad', this.itemImgListener)
     },
     // 由于当前组件在keep alive中被排除，所以取消事件就不能与Home组件一样写在deactivated
     destroyed() {
