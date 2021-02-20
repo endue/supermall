@@ -33,7 +33,7 @@
         pullUpLoad: this.pullUpLoad
       })
       // 监听滚动
-      if(this.probeType === 2 || this.probeType == 3){
+      if(this.probeType === 2 || this.probeType === 3){
         this.scroll.on('scroll', (position) => {
           this.$emit('scroll', position)
         })
