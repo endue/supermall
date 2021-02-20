@@ -7,9 +7,10 @@
                    ref="tabControl1"
                    v-show="isTopFixed"/>
       <!--
-      子组件属性名称为驼峰，这里要写蛇形：如：probeType
+      子组件props中属性名称为驼峰，这里要写蛇形：如：probeType
       同时对于非字符串类型，要使用v-bind
       -->
+      <!--scroll高度计算一种是以及calc计算，一种是基于样式来实现定位-->
       <scroll class="content"
               ref="scroll"
               :probe-type="3"
@@ -95,7 +96,8 @@
         refresh
       })
     },
-    // 让home保持原状态，基于keep-alive和activated以及deactivated来实现
+    // 让home保持原状态，基于keep-alive和activated以及deactivated来保存scroll滑动位置的记录
+    // 这样当跳转其他页面回来后依旧显示在之前的位置
     activated() {
       this.$refs.scroll.scrollTo(0,this.saveY,0)
       this.$refs.scroll.refresh()
