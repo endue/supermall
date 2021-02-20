@@ -8,6 +8,7 @@
       <detail-image-info :detail-info="detailInfo" @imageLoad="imageLoad"/>
       <detail-param-info :param-info="paramInfo"/>
       <detail-comment-info :comment-info="commentInfo"/>
+      <goods-list :goods="recommends"/>
     </scroll>
   </div>
 </template>
@@ -21,7 +22,9 @@
   import DetailParamInfo from './childComps/DetailParamInfo'
   import DetailCommentInfo from './childComps/DetailCommentInfo'
   import Scroll from 'components/common/scroll/Scroll'
-  import {getDetail, Goods, Shop, GoodsParam} from 'network/detail'
+  import GoodsList from 'components/content/goods/GoodsList'
+  import {getDetail, Goods, Shop, GoodsParam, getRecommend} from 'network/detail'
+  import {debounce} from 'common/utils'
 
   export default {
     name: "Detail",
@@ -33,6 +36,7 @@
       DetailImageInfo,
       DetailParamInfo,
       DetailCommentInfo,
+      GoodsList,
       Scroll
     },
     data() {
@@ -43,7 +47,9 @@
         shop: {},
         detailInfo: {},
         paramInfo: {},
-        commentInfo: {}
+        commentInfo: {},
+        recommends: [],
+        itemImgListener: null
       }
     },
     created() {
@@ -65,14 +71,25 @@
         if(data.rate.cRate !== 0){
           this.commentInfo = data .rate.list[0]
         }
-
-
+      })
+      // 请求推荐数据
+      getRecommend().then(res => {
+        this.recommends = res.data.list
       })
     },
     methods: {
       imageLoad() {
         this.$refs.scroll.refresh()
       }
+    },
+    mounted() {
+      const refresh = debounce(this.$refs.scroll.refresh(), 50)
+      this.itemImgListener = () => {refresh()}
+      this.$bus.$on('itemImageLoad', this.itemImgListener)
+    },
+    // 由于当前组件在keep alive中被排除，所以取消事件就不能与Home组件一样写在deactivated
+    destroyed() {
+      this.$bus.$off('itemImageLoad',this.itemImgListener)
     }
   }
 </script>

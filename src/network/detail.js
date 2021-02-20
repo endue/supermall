@@ -9,6 +9,12 @@ export function getDetail(iid) {
   })
 }
 
+export function getRecommend() {
+  return request({
+    url: '/recommend'
+  })
+}
+
 // 创建类Goods，在初始化类时调用构造方法constructor
 // const g = new Goods(itemInfo,columns,services)
 export class Goods {

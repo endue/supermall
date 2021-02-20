@@ -1,7 +1,7 @@
 <template>
     <div class="goods-item" @click="itemClick">
       <!--监听图片加载完毕后的回调@load-->
-      <img :src="goodsItem.show.img" @load="imageLoad">
+      <img :src="showImage" @load="imageLoad">
       <div class="goods-info">
         <p>{{goodsItem.title}}</p>
         <span class="price">{{goodsItem.price}}</span>
@@ -19,6 +19,12 @@
         default() {
           return {}
         }
+      }
+    },
+    // 通过计算属性针对不同的场景下读取不同的字段属性
+    computed: {
+      showImage() {
+        return this.goodsItem.image || this.goodsItem.show.img
       }
     },
     methods: {
