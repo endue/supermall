@@ -10,6 +10,8 @@
       <detail-comment-info :comment-info="commentInfo" ref="comment"/>
       <goods-list :goods="recommends" ref="recommend"/>
     </scroll>
+    <detail-bottom-bar/>
+    <back-top @click.native="backClick" v-show="isShowBackTop"/>
   </div>
 </template>
 
@@ -21,8 +23,10 @@
   import DetailImageInfo from './childComps/DetailImageInfo'
   import DetailParamInfo from './childComps/DetailParamInfo'
   import DetailCommentInfo from './childComps/DetailCommentInfo'
+  import DetailBottomBar from './childComps/DetailBottomBar'
   import Scroll from 'components/common/scroll/Scroll'
   import GoodsList from 'components/content/goods/GoodsList'
+  import BackTop from 'components/content/backTop/BackTop'
   import {getDetail, Goods, Shop, GoodsParam, getRecommend} from 'network/detail'
   import {debounce} from 'common/utils'
   import {itemListenerMixin} from "common/mixin";
@@ -37,7 +41,9 @@
       DetailImageInfo,
       DetailParamInfo,
       DetailCommentInfo,
+      DetailBottomBar,
       GoodsList,
+      BackTop,
       Scroll
     },
     data() {
@@ -52,7 +58,8 @@
         recommends: [],
         themeTopYs: [],
         getThemeTopY: null,
-        currentIndex: 0
+        currentIndex: 0,
+        isShowBackTop: false
         // itemImgListener: null
       }
     },
@@ -128,6 +135,12 @@
             this.$refs.navBar.currentIndex = this.currentIndex
           }
         }
+        // 是否显示回到顶部
+        this.isShowBackTop = (-position.y) > 200
+      },
+      // 回到顶部
+      backClick() {
+        this.$refs.scroll.scrollTo(0, 0, 300)
       }
     },
     mounted() {
@@ -157,6 +170,6 @@
   }
   /* 实现scroll滚动区域计算 */
   .content {
-    height: calc(100% - 44px);
+    height: calc(100% - 44px - 49px);
   }
 </style>
