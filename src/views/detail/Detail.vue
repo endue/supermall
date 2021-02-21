@@ -29,6 +29,7 @@
   import {getDetail, Goods, Shop, GoodsParam, getRecommend} from 'network/detail'
   import {debounce} from 'common/utils'
   import {itemListenerMixin,backTopMixin} from "common/mixin";
+  import { mapActions } from 'vuex'
 
   export default {
     name: "Detail",
@@ -106,6 +107,7 @@
     },
     mixins: [itemListenerMixin,backTopMixin],
     methods: {
+      ...mapActions([ 'addCart']),
       imageLoad() {
         this.$refs.scroll.refresh()
         // 这种方式调用太频繁，采用后面的防抖技术
@@ -143,7 +145,9 @@
         product.desc = this.goods.desc
         product.price = this.goods.realPrice
         product.iid = this.iid
-        this.$store.dispatch('addCart',product)
+        this.addCart(product).then(res => {
+          console.log('添加商品回调信息:' + res)
+        })
       }
     },
     mounted() {
