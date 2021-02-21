@@ -10,7 +10,7 @@
     <div class="total-price">
       <span>合计：￥{{totalPrice}}</span>
     </div>
-    <div class="calc">
+    <div class="calc" @click="calcClick">
       去结算({{totalCount}})
     </div>
   </div>
@@ -50,6 +50,11 @@
           this.cartList.forEach(item => item.checked = false)
         }else {
           this.cartList.forEach(item => item.checked = true)
+        }
+      },
+      calcClick() {
+        if(!this.isSelectAll){
+          this.$toast.show('请选择要购买的商品')
         }
       }
     }

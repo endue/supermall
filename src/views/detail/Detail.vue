@@ -57,7 +57,7 @@
         recommends: [],
         themeTopYs: [],
         getThemeTopY: null,
-        currentIndex: 0,
+        currentIndex: 0
         // itemImgListener: null
       }
     },
@@ -146,7 +146,7 @@
         product.price = this.goods.realPrice
         product.iid = this.iid
         this.addCart(product).then(res => {
-          console.log('添加商品回调信息:' + res)
+          this.$toast.show(res)
         })
       }
     },
