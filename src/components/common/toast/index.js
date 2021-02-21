@@ -9,7 +9,7 @@ obj.install = function (Vue) {
   const toast = new toastContrustor()
   // 将组件对象手动挂载到某元素上
   toast.$mount(document.createElement('div'))
-  //
+  // 挂载div
   document.body.appendChild(toast.$el)
   // 设置vue一个全局属性
   // 使用地点在Detail/CartBottomBar两个组件中
