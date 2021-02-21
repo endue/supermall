@@ -1,7 +1,10 @@
 <template>
   <div class="cart-bottom-bar">
     <div class="total-check">
-      <check-button ></check-button>
+      <check-button
+        :is-checked="isSelectAll"
+        @click.native="checkClick">
+      </check-button>
       <span>全选</span>
     </div>
     <div class="total-price">
@@ -32,9 +35,22 @@
         },0).toFixed(2)
       },
       totalCount() {
-        return this.cartList.filter(item => {
-          return item.isCheck === true
-        }).length
+        return this.cartList.filter(item => item.checked).length
+      },
+      <!--商品实现组件全选/取消全选-->
+      isSelectAll () {
+        if(this.cartList.length === 0) return false
+        return !this.cartList.find(item => !item.checked)
+      }
+    },
+    methods: {
+      <!--组件实现商品全选/取消全选-->
+      checkClick() {
+        if(this.isSelectAll) {
+          this.cartList.forEach(item => item.checked = false)
+        }else {
+          this.cartList.forEach(item => item.checked = true)
+        }
       }
     }
   }
